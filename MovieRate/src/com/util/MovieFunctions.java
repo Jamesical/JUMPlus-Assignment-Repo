@@ -250,17 +250,18 @@ public class MovieFunctions {
 		try (Connection conn = ConnectionManager.getConnection()) {
 			
 			PreparedStatement pstmt = conn.prepareStatement("update movie set rating = ?, time_rated = ? where movie_id = ?");
-			PreparedStatement rating = conn.prepareStatement("select rating from movie where movie_id = ?");
+			PreparedStatement rating = conn.prepareStatement("select rating, time_rated from movie where movie_id = ?");
 			rating.setInt(1, choice);
 			
 			ResultSet rs = rating.executeQuery();
 			
 			while(rs.next()) {
 				double addRating = rs.getInt("rating");
-				System.out.println("RATING: " + addRating);
+				int count1 = rs.getInt("time_rated");
+				//System.out.println("RATING: " + addRating);
 				
 				pstmt.setDouble(1, rateNum + addRating);
-				pstmt.setInt(2, ++count);
+				pstmt.setInt(2, ++count1);
 				pstmt.setInt(3, choice);
 			}
 				
