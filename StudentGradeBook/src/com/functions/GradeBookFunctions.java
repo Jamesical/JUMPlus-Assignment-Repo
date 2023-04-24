@@ -144,7 +144,7 @@ public class GradeBookFunctions {
 					System.out.println("Try again chief");
 				}
 			} catch (Exception e) {
-				e.printStackTrace();
+				//e.printStackTrace();
 				System.out.println("\nPlease enter a proper option.");
 				in.nextLine();
 				// loggedIn();
@@ -167,14 +167,17 @@ public class GradeBookFunctions {
 			System.out.println("|            View Classes                  |");
 			System.out.println("__________________________________________\n" + ANSI_RESET);
 
-			int classCount = 1;
 			while (rs.next()) {
 
 				String className = rs.getString("name");
-				System.out.println("\n" + classCount++ + ": " + className);
+				int id = rs.getInt("class_id");
+				System.out.println("\n" + id + ": " + className);
 				empty = true;
 			}
 			if(empty) {selectClass();} // moves to selecting the class and next form of functionality
+			else {
+				System.out.println("\nEmpty!\n");
+			}
 			//add else redirect since empty
 			
 		} catch (SQLException e) {
@@ -188,10 +191,8 @@ public class GradeBookFunctions {
 	public static void addClasses() {
 
 		System.out.println("Name of the class you want to add?: ");
-		String className = in.nextLine();
-		in.nextLine();
-
-		System.out.println(className);
+		String className;
+		className = in.next();
 
 		try (Connection conn = ConnectionManager.getConnection()) {
 			PreparedStatement pstmt = conn.prepareStatement("insert into class values(null, ?, ?)");
@@ -203,6 +204,8 @@ public class GradeBookFunctions {
 
 		} catch (SQLException e) {
 			System.out.println("Could not make connection.");
+		} catch (Exception e) {
+			System.out.println("SYSTEM FAILURE");
 		}
 
 	}
@@ -217,7 +220,7 @@ public class GradeBookFunctions {
 			System.out.println("|            Student List                  |");
 			System.out.println("__________________________________________\n" + ANSI_RESET);
 
-			boolean empty = false;
+			boolean empty = true;
 			System.out.println("Which class to choose?: ");
 			int classNumber = in.nextInt();
 
@@ -234,10 +237,10 @@ public class GradeBookFunctions {
 					int grade = rs.getInt("grade");
 
 					System.out.println("Student Id: " + studentId + " Name: " + name + " Grade: " + grade);
-					empty = true;
+					empty = false;
 				}
 
-				if (empty) {classMenu(classNumber);}
+		
 
 			} catch (SQLException e) {
 				System.out.println("Could not make connection.");
